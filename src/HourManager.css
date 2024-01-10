@@ -1,0 +1,10 @@
+.subject-item {
+    border: 1px solid rgb(138, 138, 138);
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+    .subject-item-header {
+        background-color: gray;
+        border-radius: 2px 2px 0 0; 
+    }
