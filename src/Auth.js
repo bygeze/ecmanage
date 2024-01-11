@@ -54,21 +54,35 @@ const handleLogin = async () => {
   };
 
   return (
-    <div>
-      <h1>ECManager</h1>
-      <h2>{isRegistering ? 'Registrarse' : 'Login'}</h2>
-      {isRegistering && (
-        <input type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
-      )}
-      <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={isRegistering ? handleRegister : handleLogin}>
-        {isRegistering ? 'Registrarse' : 'Iniciar Sesión'}
-      </button>
-      <p onClick={handleToggleRegister}>
-        {isRegistering ? '¿Ya tienes una cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
-      </p>
-    </div>
+    <>
+      <div className="row text-center">
+        <h1>ECManager</h1>
+        <h2>{isRegistering ? 'Crear cuenta' : 'Login'}</h2>
+      </div>
+      <div className="row">
+        <div className="col-4"></div>
+        <div className="col-4">
+          {isRegistering && (
+            <input className="form-control mb-2" type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
+          )}
+          <input className="form-control mb-2"  type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input className="form-control mb-2"  type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
+          
+          <button className="btn btn-success form-control" onClick={isRegistering ? handleRegister : handleLogin}>
+            {isRegistering ? 'Registrarme' : 'Iniciar sesión'}
+          </button>
+          <p className="mt-3">
+            {isRegistering ? '¿Ya tienes una cuenta?' : '¿No tienes cuenta?'}
+            <span style={{color: "blue"}} onClick={handleToggleRegister}>
+              {isRegistering ? ' Inicia sesión!' : ' Regístrate!'}
+            </span>
+          </p>
+        </div>
+        <div className="col-4"></div>
+      </div>
+
+
+    </>
   );
 };
 

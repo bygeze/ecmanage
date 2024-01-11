@@ -34,15 +34,10 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
     }
 
     const calcAvailableHours = (subjectId, unitId) => {
-        console.log(bookEntries)
-
         // Filter bookEntries based on subjectId and unitId
         const relevantBookEntries = bookEntries.filter(
           (entry) => entry.subjectId === subjectId && entry.unitId === unitId
         );
-
-        
-            
 
          //Calculate the sum of hours from relevant bookEntries
         const totalBookedHours = relevantBookEntries.reduce(

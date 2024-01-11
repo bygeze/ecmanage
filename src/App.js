@@ -42,7 +42,7 @@ const App = () => {
           />
           <Route
             path="/ecmanager"
-            element={<PrivateRoute element={<HourManager handleLogout={handleLogout} />} isAuthenticated={isAuthenticated}  />}
+            element={<PrivateRoute element={<HourManager handleLogout={handleLogout} lsAppKey={lsAppKey} />} isAuthenticated={isAuthenticated}  />}
           />
           {/* Agregar más rutas privadas según sea necesario */}
         </Routes>

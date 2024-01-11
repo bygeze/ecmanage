@@ -49,8 +49,8 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
                 </tr>
             </thead>
             <tbody>
-                {bookEntries.map((book) => (
-                    <tr>
+                {bookEntries.map((book, index) => (
+                    <tr key={index}>
                         <td>{getSubjectNameById(book.subjectId)}</td>
                         <td>{`Unidad ${book.unitId}`}</td>
                         <td>{book.hours}</td>
@@ -59,8 +59,8 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
                 ))}
                     <tr>
                         <td>
-                            <select className="form-control" onChange={(e) => handleSubjectSelectChange(e)}>
-                                <option value="">Selecciona una materia</option>
+                            <select defaultValue={0} className="form-control" onChange={(e) => handleSubjectSelectChange(e)}>
+                                <option value="0">Selecciona una materia</option>
                                 {subjects.map((subject) => (
                                     <option key={subject.id} value={subject.id}>
                                         {subject.name}
@@ -70,10 +70,10 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
                         </td>
                         <td>
 
-                            <select className="form-control" onChange={handleUnitSelectChange}>
+                            <select defaultValue={0} className="form-control" onChange={handleUnitSelectChange}>
                                 {selectedSubject ? (
                                     <>
-                                        <option value="">Selecciona una unidad</option>
+                                        <option value="0">Selecciona una unidad</option>
                                         {getUnitsBySubjectId(selectedSubject.id).map((unit) => (
                                             <option key={unit.id} value={unit.id}>
                                                 Unidad {unit.name}
@@ -81,7 +81,7 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
                                         ))}
                                     </>
                                 ) : (
-                                    <option value="" disabled selected>Selecciona una materia primero</option>
+                                    <option value="0" disabled >Selecciona una materia primero</option>
                                 )}
                             </select>
                             
