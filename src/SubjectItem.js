@@ -6,7 +6,6 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
     const [inputTotalHours, setInputTotalHours] = useState(0);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
-    
 
 
     const handleInputUnitName = (e) => {
