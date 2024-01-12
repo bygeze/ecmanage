@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Auth from './Auth';
 import PrivateRoute from './PrivateRoute';
 import HourManager from './HourManager';
+import './App.css';
 
 const App = () => {
   const lsAppKey = "lsecmv1hx36z"
@@ -33,7 +34,7 @@ const App = () => {
   };
 
   return (
-    <div className="container">
+    <div className="App container">
       <Router>
         <Routes>
           <Route

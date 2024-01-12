@@ -1,5 +1,7 @@
 
 import { useState, useEffect } from "react";
+import './SubjectItem.css'
+
 
 function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bookEntries}) {
     const [inputUnitName, setInputUnitName] = useState("");
@@ -65,12 +67,12 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
                     <h4 className="text-start">{subject.name}</h4>
                 </div>
                 <div className="col-3 p-2 d-flex align-items-center justify-content-end">
-                    <h6 
-                        className="text-end"
+                    <span
+                        className="text-end emoji"
                         onClick={toggleCollapseContent}>
 
-                        {isCollapsed ? 'Desplegar' : 'Plegar'}
-                    </h6>
+                        {isCollapsed ?  String.fromCodePoint('0x2b07') : String.fromCodePoint('0x2b06')}
+                    </span>
                 </div>
 
             </div>
@@ -92,7 +94,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
                                 Horas disponibles
                             </th>
                             <th>
-                                Borrar
+                                
                             </th>
                         </tr>
                     </thead>
@@ -105,7 +107,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
                             <td>{unit.hours}</td>
                             <td>{calcHourPercentage(unit.hours)}</td>
                             <td>{calcAvailableHours(subject.id, unit.id)}</td>
-                            <td><span onClick={() => onDeleteUnit(unit.id)}>Borrar</span></td>
+                            <td><span className="emoji" onClick={() => onDeleteUnit(unit.id)}>{String.fromCodePoint('0x1f5d1')}</span></td>
                             </tr>
                         );
                         }
@@ -114,27 +116,34 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
                     </tbody>
                 </table>
                 <div className="row mt-4">
-                    <div className="col-4">
-                        <label htmlFor="" className="form-label">Número de unidad</label>
+                    <span className="mb-2">Añadir unidad a la materia</span>
+                    <div className="input-group">
+                        
                         <input 
                             type="number" 
                             name="" 
                             id="" 
                             className="form-control"
-                            onChange={handleInputUnitName} />
+                            onChange={handleInputUnitName} 
+                            placeholder="# de unidad"/>
+
+                        <input 
+                            type="number" 
+                            name="" 
+                            id="" 
+                            className="form-control"
+                            onChange={handleInputTotalHours} 
+                            placeholder="# de horas"/>
+                        
+                        <button className="btn btn-primary" onClick={onAddUnit}>Añadir</button>
                     </div>
                     <div className="col-4">
-                        <label htmlFor="" className="form-label">Horas de la unidad</label>
-                        <input 
-                            type="number" 
-                            name="" 
-                            id="" 
-                            className="form-control"
-                            onChange={handleInputTotalHours} />
+                        
+
                     </div>
                     <div className="col-4"> 
-                        <label htmlFor="" className="form-label invisible" >Añadir unidad</label>
-                        <button className="btn btn-primary w-100" onClick={onAddUnit}>Añadir unidad</button>
+                        
+                        
                     </div>
 
                 </div>

@@ -238,14 +238,16 @@ function HourManager({lsAppKey}) {
         <div className="row">
             <div className="col-6">
                 <div className="row">
-                    <h2>Materias</h2>
+                        <h3 className="app-title">Mis materias</h3>
                 </div>
-                <div className="row mb-2">
-                    <div className="input-group">
-                        <input className="form-control" onChange={handleInputSubjectName} placeholder="Escribe el nombre de la materia aquí" type="text" name="" id="" />
-                        <button className="btn btn-primary" onClick={handleAddSubject}>Añadir materia</button>
+                <div className="subjects-container p-2 mb-2">
+                    <div className="row mb-2">
+                        <span className="mb-1">Añadir una materia nueva</span>
+                        <div className="input-group">
+                            <input className="form-control" onChange={handleInputSubjectName} placeholder="" type="text" name="" id="" />
+                            <button className="btn btn-primary" onClick={handleAddSubject}>Añadir materia</button>
+                        </div>
                     </div>
-
                 </div>
                 <div id="subject-list">
                     {subjects.map((subject, index) => (
@@ -255,7 +257,7 @@ function HourManager({lsAppKey}) {
             </div>
             <div className="col-6">
                 <div className="row">
-                    <h2>Registro</h2>
+                    <h3 className="app-title">Registro</h3>
                 </div>
                 <div className="row">
                     <Book bookEntries={bookEntries} getSubjectNameById={getSubjectNameById} subjects={subjects} getUnitsBySubjectId={getUnitsBySubjectId} handleAddBookEntry={handleAddBookEntry}></Book>

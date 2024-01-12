@@ -1,0 +1,10 @@
+.subject-item {
+    margin-bottom: 10px;
+    background-color: #ececec;
+    border-radius: 10px 10px 5px 5px;
+}
+
+    .subject-item-header {
+        background-color: #c7c7c7;
+        border-radius: 5px 5px 0 0; 
+    }   

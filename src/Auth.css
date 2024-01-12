@@ -1,0 +1,18 @@
+.Auth {
+    background-color: #ececee;
+    width: 400px;
+    border-radius: 5px;
+    margin: 0 auto;
+}
+
+.toggle-register-btn {
+    cursor: pointer;
+}
+
+.toggle-register-btn:hover {
+    text-decoration: underline;
+}
+
+.app-title {
+    color: #ececee;
+}

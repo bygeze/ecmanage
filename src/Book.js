@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import './Book.css'
 
 function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, handleAddBookEntry}) {
     const [selectedSubject, setSelectedSubject] = useState();
@@ -36,8 +37,16 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
         handleAddBookEntry(entry);
     }
 
+    const reverseMap = (arr) => {
+        const mapReverse1 = arr
+            .slice(0)
+            .reverse();
+
+        return mapReverse1;
+    }
   return (
     <div className="book">
+        <div className="books-container p-2">
         <table className="table">
             <thead>
                 <tr>
@@ -45,64 +54,64 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
                     <th>Unidad</th>
                     <th>Horas</th>
                     <th>Fecha</th>
-                    <th>Borrar</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                {bookEntries.map((book, index) => (
+                <tr>
+                    <td>
+                        <select defaultValue={0} className="form-control" onChange={(e) => handleSubjectSelectChange(e)}>
+                            <option value="0">Selecciona una materia</option>
+                            {subjects.map((subject) => (
+                                <option key={subject.id} value={subject.id}>
+                                    {subject.name}
+                                </option>
+                            ))}
+                        </select>
+                    </td>
+                    <td>
+
+                        <select defaultValue={0} className="form-control" onChange={handleUnitSelectChange}>
+                            {selectedSubject ? (
+                                <>
+                                    <option value="0">Selecciona una unidad</option>
+                                    {getUnitsBySubjectId(selectedSubject.id).map((unit) => (
+                                        <option key={unit.id} value={unit.id}>
+                                            Unidad {unit.name}
+                                        </option>
+                                    ))}
+                                </>
+                            ) : (
+                                <option value="0" disabled >Selecciona una materia primero</option>
+                            )}
+                        </select>
+                        
+                    </td>
+                    <td>
+                        <input type="number" className="form-control" onChange={handleInputHours}/>
+                    </td>
+                    <td>
+                        <input className="form-control" type="date" name="" id="" onChange={handleInputDate} />
+                    </td>
+                    <td><button className="btn btn-primary" onClick={onAddEntry}>Añadir</button></td>
+                </tr>
+                {reverseMap(bookEntries).map((book, index) => (
                     <tr key={index}>
                         <td>{getSubjectNameById(book.subjectId)}</td>
                         <td>{`Unidad ${book.unitId}`}</td>
                         <td>{book.hours}</td>
                         <td>{book.date}</td>
+                        <td></td>
                     </tr>
                 ))}
-                    <tr>
-                        <td>
-                            <select defaultValue={0} className="form-control" onChange={(e) => handleSubjectSelectChange(e)}>
-                                <option value="0">Selecciona una materia</option>
-                                {subjects.map((subject) => (
-                                    <option key={subject.id} value={subject.id}>
-                                        {subject.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </td>
-                        <td>
 
-                            <select defaultValue={0} className="form-control" onChange={handleUnitSelectChange}>
-                                {selectedSubject ? (
-                                    <>
-                                        <option value="0">Selecciona una unidad</option>
-                                        {getUnitsBySubjectId(selectedSubject.id).map((unit) => (
-                                            <option key={unit.id} value={unit.id}>
-                                                Unidad {unit.name}
-                                            </option>
-                                        ))}
-                                    </>
-                                ) : (
-                                    <option value="0" disabled >Selecciona una materia primero</option>
-                                )}
-                            </select>
-                            
-                        </td>
-                        <td>
-                            <input type="number" className="form-control" onChange={handleInputHours}/>
-                        </td>
-                        <td>
-                            <input className="form-control" type="date" name="" id="" onChange={handleInputDate} />
-                        </td>
-                        <td><button className="btn btn-primary" onClick={onAddEntry}>Añadir</button></td>
-                    </tr>
 
 
             </tbody>
             
         </table>
-
+        </div>
     </div>
-
-    
   );
 }
 

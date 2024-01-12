@@ -1,7 +1,8 @@
 // Home.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { auth } from './firebase.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
+import './Auth.css'
 
 import { useNavigate } from 'react-router-dom';
 
@@ -45,44 +46,43 @@ const handleLogin = async () => {
         console.log("login exitoso")
         history("ecmanager");
     })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log('Error al encontrar el usuario' + error);
-  });
-
+    .catch((error) => {   
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log('Error al encontrar el usuario' + error);
+    });
   };
 
   return (
-    <>
-      <div className="row text-center">
-        <h1>ECManager</h1>
-        <h2>{isRegistering ? 'Crear cuenta' : 'Login'}</h2>
-      </div>
-      <div className="row">
-        <div className="col-4"></div>
-        <div className="col-4">
-          {isRegistering && (
-            <input className="form-control mb-2" type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
-          )}
-          <input className="form-control mb-2"  type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input className="form-control mb-2"  type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-          
-          <button className="btn btn-success form-control" onClick={isRegistering ? handleRegister : handleLogin}>
-            {isRegistering ? 'Registrarme' : 'Iniciar sesión'}
-          </button>
-          <p className="mt-3">
-            {isRegistering ? '¿Ya tienes una cuenta?' : '¿No tienes cuenta?'}
-            <span style={{color: "blue"}} onClick={handleToggleRegister}>
-              {isRegistering ? ' Inicia sesión!' : ' Regístrate!'}
-            </span>
-          </p>
+    <div className='row'>
+        <div className="col-12 text-center mt-4">
+            <h1 className='mb-4 display-4 app-title'>ECManager</h1>
         </div>
-        <div className="col-4"></div>
+        <div className=" col-12">
+            <div className="Auth p-4">
+                <div className="text-center g-0 pb-2">
+                    <h4>{isRegistering ? 'Crear cuenta' : 'Login'}</h4>
+                </div>
+
+                {isRegistering && (
+                    <input className="form-control mb-2" type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
+                )}
+                <input className="form-control mb-2"  type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input className="form-control mb-2"  type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
+                
+                <button className="btn btn-success form-control" onClick={isRegistering ? handleRegister : handleLogin}>
+                    {isRegistering ? 'Registrarme' : 'Iniciar sesión'}
+                </button>
+                <p className="mt-3">
+                    {isRegistering ? '¿Ya tienes una cuenta? ' : '¿No tienes cuenta? '}
+                    <span className="toggle-register-btn" style={{color: "blue"}} onClick={handleToggleRegister}>
+                    {isRegistering ? ' Inicia sesión!' : ' Regístrate!'}
+                    </span>
+                </p>
+            </div>
+
       </div>
-
-
-    </>
+    </div>
   );
 };
 
