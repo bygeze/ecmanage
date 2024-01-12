@@ -87,6 +87,24 @@ function HourManager({lsAppKey}) {
           }
         }
       }
+
+      const removeBookEntryFromFirebase = (id) => {
+        if (uid) {
+          // Find the index of the unit with the specified id
+          const bookIndex = bookEntries.findIndex((book) => book.id === id);
+      
+          if (bookIndex !== -1) {
+            const bookRef = ref(database, `users/${uid}/bookEntries/${bookIndex}`);
+            
+            // Remove the unit from Firebase
+            set(bookRef, null);
+      
+            // Update the state by filtering out the unit with the given id
+            const updatedBooks = bookEntries.filter((book) => book.id !== id);
+            setUnits(updatedBooks);
+          }
+        }
+      }
       
 
       const saveBookEntryToFirebase = (updatedBookEntries, updatedIdCounter) => {
@@ -234,11 +252,15 @@ function HourManager({lsAppKey}) {
         saveBookEntryToFirebase([...bookEntries, entry], idCounterBookEntries + 1); 
     }
 
+    const handleDeleteBookEntry = (id) => {
+        removeBookEntryFromFirebase(id);
+    }
+
     return (
-        <div className="row">
-            <div className="col-6">
+        <div className="row mt-4">
+            <div className="col-12 col-lg-6"> 
                 <div className="row">
-                        <h3 className="app-title">Mis materias</h3>
+                        <h3 className="app-title">Materias</h3>
                 </div>
                 <div className="subjects-container p-2 mb-2">
                     <div className="row mb-2">
@@ -255,12 +277,12 @@ function HourManager({lsAppKey}) {
                     ))}
                 </div>
             </div>
-            <div className="col-6">
+            <div className="col-12 col-lg-6 d-initial">
                 <div className="row">
                     <h3 className="app-title">Registro</h3>
                 </div>
                 <div className="row">
-                    <Book bookEntries={bookEntries} getSubjectNameById={getSubjectNameById} subjects={subjects} getUnitsBySubjectId={getUnitsBySubjectId} handleAddBookEntry={handleAddBookEntry}></Book>
+                    <Book bookEntries={bookEntries} getSubjectNameById={getSubjectNameById} subjects={subjects} getUnitsBySubjectId={getUnitsBySubjectId} handleAddBookEntry={handleAddBookEntry} handleDeleteBookEntry={handleDeleteBookEntry}></Book>
                 </div>
             </div>
         </div>

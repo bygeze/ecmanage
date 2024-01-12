@@ -2,7 +2,7 @@
 import { useState } from "react";
 import './Book.css'
 
-function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, handleAddBookEntry}) {
+function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, handleAddBookEntry, handleDeleteBookEntry}) {
     const [selectedSubject, setSelectedSubject] = useState();
     const [selectedUnit, setSelectedUnit] = useState();
     const [inputDate, setInputDate] = useState();
@@ -50,9 +50,9 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
         <table className="table">
             <thead>
                 <tr>
-                    <th>Materia</th>
-                    <th>Unidad</th>
-                    <th>Horas</th>
+                    <th style={{width: "10px",}}>Materia</th>
+                    <th><span className="d-md-initial d-lg-none">Ud. </span><span className="d-none d-lg-initial">Unidades</span></th>
+                    <th><span className="d-md-initial d-lg-none">Hrs</span><span className="d-none d-lg-initial">Horas</span></th>
                     <th>Fecha</th>
                     <th></th>
                 </tr>
@@ -71,7 +71,7 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
                     </td>
                     <td>
 
-                        <select defaultValue={0} className="form-control" onChange={handleUnitSelectChange}>
+                        <select defaultValue={0} size={1} className="form-control" onChange={handleUnitSelectChange}>
                             {selectedSubject ? (
                                 <>
                                     <option value="0">Selecciona una unidad</option>
@@ -88,20 +88,20 @@ function Book({bookEntries, getSubjectNameById, subjects, getUnitsBySubjectId, h
                         
                     </td>
                     <td>
-                        <input type="number" className="form-control" onChange={handleInputHours}/>
+                        <input size="1" type="number" className="form-control ps-1 pe-1" onChange={handleInputHours}/>
                     </td>
                     <td>
-                        <input className="form-control" type="date" name="" id="" onChange={handleInputDate} />
+                        <input className="form-control ps-1 pe-1" type="date" name="" id="" onChange={handleInputDate} />
                     </td>
-                    <td><button className="btn btn-primary" onClick={onAddEntry}>Añadir</button></td>
+                    <td><span className="emoji" onClick={onAddEntry}>{String.fromCodePoint('0x2795')}</span></td>
                 </tr>
                 {reverseMap(bookEntries).map((book, index) => (
                     <tr key={index}>
                         <td>{getSubjectNameById(book.subjectId)}</td>
-                        <td>{`Unidad ${book.unitId}`}</td>
+                        <td><span className="d-md-initial d-lg-none">Ud. </span><span className="d-none d-lg-initial">Unidad </span>{`${book.unitId}`}</td>
                         <td>{book.hours}</td>
                         <td>{book.date}</td>
-                        <td></td>
+                        <td><span className="emoji">{String.fromCodePoint('0x1f5d1')}</span></td>
                     </tr>
                 ))}
 
