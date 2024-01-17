@@ -32,7 +32,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
     }
 
     const calcHourPercentage = (hours) => {
-        return hours * 0.2;
+        return (hours * 0.2).toFixed(1);
     }
 
     const calcAvailableHours = (subjectId, unitId) => {
@@ -58,6 +58,8 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
 
     };
 
+
+
     return (
         <div 
         className="subject-item" 
@@ -82,16 +84,16 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
                     <thead>
                         <tr>
                             <th>
-                                Unidad
+                                <span className="d-none d-lg-inline">Unidad</span><span className="d-inline d-lg-none">Ud.</span>
                             </th>
                             <th>
-                                Horas
+                                <span className="d-none d-lg-inline">Horas</span><span className="d-inline d-lg-none">Hrs.</span>
                             </th>
                             <th>
                                 20%
                             </th>
                             <th>
-                                Horas disponibles
+                            <span className="d-none d-lg-inline">Horas disponibles</span><span className="d-inline d-lg-none">Hrs. disp.</span>
                             </th>
                             <th>
                                 

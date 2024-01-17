@@ -119,8 +119,8 @@ function HourManager({lsAppKey}) {
     };
 
     return (
-        <div className="row">
-            <div className="col-6">
+        <div className="row m-0">
+            <div className="col-12 col-md-5 col-lg-6 p-0 p-md-2">
                 <div className="row">
                         <h3 className="app-title">Mis materias</h3>
                 </div>
@@ -139,7 +139,7 @@ function HourManager({lsAppKey}) {
                     ))}
                 </div>
             </div>
-            <div className="col-6">
+            <div className="col-12 col-md-7 col-lg-6 p-0 p-md-2">
                 <div className="row">
                     <h3 className="app-title">Registro</h3>
                 </div>
