@@ -50,6 +50,17 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
 
         return mapReverse1;
     }
+
+    const utilCollideText = (text, length) => {
+        if(text.length > length) {
+            text = text.slice(0, length - 2);
+        
+            text = text + "..";
+        }
+
+        return text
+    }
+
   return (
     <div className="book">
         <div className="books-container p-2">
@@ -57,8 +68,8 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
             <thead>
                 <tr>
                     <th>Materia</th>
-                    <th>Unidad</th>
-                    <th>Horas</th>
+                    <th><span className="d-none d-lg-inline">Unidad</span><span className="d-inline d-lg-none">Ud.</span></th>
+                    <th><span className="d-none d-lg-inline">Horas</span><span className="d-inline d-lg-none">Hrs.</span></th>
                     <th>Fecha</th>
                     <th></th>
                 </tr>
@@ -94,12 +105,12 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
                         
                     </td>
                     <td>
-                        <input type="number" className="form-control" onChange={handleInputHours}/>
+                        <input type="number"     className="form-control ps-0 pe-0" onChange={handleInputHours}/>
                     </td>
                     <td>
-                        <input className="form-control" type="date" name="" id="" onChange={handleInputDate} />
+                        <input className="form-control date-input" type="date" name="" id="" onChange={handleInputDate} />
                     </td>
-                    <td><button className="btn btn-primary" onClick={onAddEntry}>Añadir</button></td>
+                    <td><span onClick={onAddEntry}>{String.fromCodePoint('0x2795')}</span></td>
                 </tr>
                 
                 {
@@ -108,11 +119,15 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
                  */
                 bookEntries.map((book, index) => (
                     <tr key={index}>
-                        <td>{getSubjectNameById(book.subjectId)}</td>
-                        <td>{`Unidad ${book.unitId}`}</td>
+                        <td>
+                            <span className="d-none d-lg-none d-xl-inline">{getSubjectNameById(book.subjectId)}</span>
+                            <span className="d-inline d-md-none">{utilCollideText(getSubjectNameById(book.subjectId), 8)}</span>
+                            <span className="d-none d-md-inline d-xl-none">{utilCollideText(getSubjectNameById(book.subjectId), 10)}</span>
+                            </td>
+                        <td><span className="d-none d-lg-inline">Unidad </span><span className="d-inline d-lg-none">Ud. </span>{book.unitId}</td>
                         <td>{book.hours}</td>
                         <td>{book.date}</td>
-                        <td><span onClick={() => {onDeleteEntry(book.id)}}>XX</span></td>
+                        <td><span onClick={() => {onDeleteEntry(book.id)}}>{String.fromCodePoint('0x1f5d1')}</span></td>
                     </tr>
                 ))}
 

@@ -2,3 +2,20 @@
     background-color: #ececec;
     border-radius: 5px;
 }
+
+.date-input {
+    max-width: 90px;
+}
+
+@media (min-width: 768px) { 
+    .date-input {
+        max-width: 90px;
+    }
+    
+}
+
+@media (min-width: 1200px) { 
+    .date-input {
+        max-width: 100%;
+    }
+ }
