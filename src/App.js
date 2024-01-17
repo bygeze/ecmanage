@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Auth from './Auth';
 import PrivateRoute from './PrivateRoute';
-import HourManager from './HourManager';
+import HourManager from './components/HourManager/HourManager';
 import './App.css';
 
 const App = () => {
