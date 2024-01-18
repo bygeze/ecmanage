@@ -12,11 +12,23 @@ const Auth = ({ isAuthenticated, handleAuth}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [isError, setIsError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
   const history = useNavigate();
 
   const handleToggleRegister = () => {
     setIsRegistering(!isRegistering);
   };
+
+  const handleToggleError = (msg) => {
+      setErrorMsg(msg);
+      setIsError(true);
+      setTimeout(() => {
+        setErrorMsg("");
+        setIsError(false);
+      }, 5000)
+  }
 
 
 const handleRegister = async () => {
@@ -46,10 +58,18 @@ const handleLogin = async () => {
         console.log("login exitoso")
         history("ecmanager");
     })
-    .catch((error) => {   
-        //const errorCode = error.code;
-        //const errorMessage = error.message;
-        console.log('Error al encontrar el usuario' + error);
+    .catch((error) => {
+        switch(error.code) {
+          case "auth/invalid-email": 
+            handleToggleError("El e-mail o la contraseña son incorrectas");
+          break;
+          case "auth/invalid-credential":
+            handleToggleError("El e-mail o la contraseña son incorrectas");
+          break;
+          default:
+            handleToggleError("Ha habido un error inesperado");
+          break;
+        }
     });
   };
 
@@ -79,6 +99,10 @@ const handleLogin = async () => {
                     {isRegistering ? ' Inicia sesión!' : ' Regístrate!'}
                     </span>
                 </p>
+                  {isError ? 
+                    <div className="alert alert-danger">{errorMsg}</div> : <></>
+                }
+                
             </div>
 
       </div>

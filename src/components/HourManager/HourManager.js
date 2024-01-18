@@ -44,12 +44,13 @@ function HourManager({lsAppKey}) {
             setIdCounterBookEntries(data);
         });
 
-    });
+    }, [uid]);
 
     const handleAddSubject = () => {
         let subject = {
             id: idCounterSubject + 1,
-            name: inputSubjectName
+            name: inputSubjectName,
+            backgroundColor: "#c7c7c7",
         }
 
         setSubjects((prevSubjects) => [...prevSubjects, subject]);
@@ -83,6 +84,41 @@ function HourManager({lsAppKey}) {
 
         api.saveBookEntryToFirebase(uid, [...bookEntries, entry], idCounterBookEntries + 1); 
     }
+
+    const handleEditSubjectColor = (id, color) => {
+        // Find the subject with the given id
+        const updatedSubjects = subjects.map((subject) => {
+            if (subject.id === id) {
+                // Add or update the backgroundColor property
+                return { ...subject, backgroundColor: color };
+            }
+            return subject;
+        });
+    
+        // Update the state with the new array
+        setSubjects(updatedSubjects);
+    
+        // Execute the API call to save the updated subjects to Firebase
+        api.saveSubjectToFirebase(uid, updatedSubjects, null);
+    };
+
+    const handleEditSubjectCollapse = (id, collapse) => {
+        // Find the subject with the given id
+        const updatedSubjects = subjects.map((subject) => {
+            if (subject.id === id) {
+                // Add or update the backgroundColor property
+                return { ...subject, isCollapsed: collapse };
+            }
+            return subject; 
+        });
+
+        // Update the state with the new array
+        setSubjects(updatedSubjects);
+    
+        // Execute the API call to save the updated subjects to Firebase
+        api.saveSubjectToFirebase(uid, updatedSubjects, null);
+    };
+    
 
     const handleDeleteUnit = (id) => {
         //Filter out the unit with the given id
@@ -133,7 +169,16 @@ function HourManager({lsAppKey}) {
                 </div>
                 <div id="subject-list">
                     {subjects.map((subject, index) => (
-                        <SubjectItem key={index} subject={subject} index={index} units={units} handleAddUnit={handleAddUnit} handleDeleteUnit={handleDeleteUnit} bookEntries={bookEntries}></SubjectItem>
+                        <SubjectItem 
+                            key={index} 
+                            subject={subject} 
+                            index={index} 
+                            units={units} 
+                            handleAddUnit={handleAddUnit} 
+                            handleDeleteUnit={handleDeleteUnit} 
+                            bookEntries={bookEntries} 
+                            handleEditSubjectColor={handleEditSubjectColor}
+                            handleEditSubjectCollapse={handleEditSubjectCollapse}></SubjectItem>
                     ))}
                 </div>
             </div>

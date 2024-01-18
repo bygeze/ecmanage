@@ -2,17 +2,20 @@
 import { useState } from "react";
 import './SubjectItem.css'
 
-
-function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bookEntries}) {
+function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bookEntries, handleEditSubjectColor, handleEditSubjectCollapse}) {
     const [inputUnitName, setInputUnitName] = useState("");
     const [inputTotalHours, setInputTotalHours] = useState(0);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(subject.isCollapsed);
+    const [frameColor,  setFrameColor] = useState(subject.backgroundColor);
 
-
+    const handleInputColor = (id, e) => {
+//console.log(e.target.value);
+        setFrameColor(e.target.value);
+        handleEditSubjectColor(id, e.target.value);
+    }
 
     const handleInputUnitName = (e) => {
         setInputUnitName(e.target.value);
-
     }
 
     const handleInputTotalHours = (e) => {
@@ -21,6 +24,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
 
     const toggleCollapseContent = () => {
         setIsCollapsed(!isCollapsed);
+        handleEditSubjectCollapse(subject.id, !isCollapsed);
     }
 
     const onAddUnit = () => {
@@ -34,6 +38,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
     const calcHourPercentage = (hours) => {
         return (hours * 0.2).toFixed(1);
     }
+    
 
     const calcAvailableHours = (subjectId, unitId) => {
         // Filter bookEntries based on subjectId and unitId
@@ -64,11 +69,12 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
         <div 
         className="subject-item" 
         key={index}>
-            <div className="row g-0 subject-item-header">
+            <div className="row g-0 subject-item-header" style={{backgroundColor: frameColor}}>
                 <div className="col-9 p-2 d-flex align-items-center justify-content-start">
                     <h4 className="text-start">{subject.name}</h4>
                 </div>
                 <div className="col-3 p-2 d-flex align-items-center justify-content-end">
+                    <input value={frameColor} onChange={(e) => {handleInputColor(subject.id, e)}} type="color"></input>
                     <span
                         className="text-end emoji"
                         onClick={toggleCollapseContent}>
