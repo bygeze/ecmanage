@@ -3,8 +3,6 @@ import "./HourManager.css";
 import SubjectItem from '../SubjectItem/SubjectItem'
 import Book from '../Book/Book'
 import api from '../../services/firebaseApi';
-import { ref, get, set, update } from 'firebase/database';
-import { database } from '../../services/firebase';
 
 function HourManager({lsAppKey}) {
     const [idCounterSubject, setIdCounterSubject] = useState(0);
@@ -18,7 +16,7 @@ function HourManager({lsAppKey}) {
     const [idCounterBookEntries, setIdCounterBookEntries] = useState(0);
     const [bookEntries, setBookEntries] = useState([]);
 
-    const [uid, setUid] = useState(localStorage.getItem(lsAppKey + "-uid"));
+    const [uid] = useState(localStorage.getItem(lsAppKey + "-uid"));
 
     useEffect(() => {           
         // get data from db
@@ -46,7 +44,7 @@ function HourManager({lsAppKey}) {
             setIdCounterBookEntries(data);
         });
 
-    }, []);
+    });
 
     const handleAddSubject = () => {
         let subject = {
