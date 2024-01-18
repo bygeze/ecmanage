@@ -16,3 +16,9 @@
 .app-title {
     color: #ececee;
 }
+
+@media (max-width: 575.98px) {  
+    .Auth {
+        width: 100%
+    }
+}
