@@ -43,13 +43,16 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
         handleDeleteBookEntry(id);
     }
 
+    /*
+    NOT BEING USED ATM
+
     const reverseMap = (arr) => {
         const mapReverse1 = arr
             .slice(0)
             .reverse();
 
         return mapReverse1;
-    }
+    }*/
 
     const utilCollideText = (text, length) => {
         if(text.length > length) {
