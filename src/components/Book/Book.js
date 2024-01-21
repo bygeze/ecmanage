@@ -136,7 +136,7 @@ function Book({bookEntries, handleDeleteBookEntry, getUnitNameById, getSubjectNa
                         <td><span className="d-none d-lg-inline">Unidad </span><span className="d-inline d-lg-none">Ud. </span>{getUnitNameById(book.unit_id)}</td>
                         <td>{book.hours}</td>
                         <td>{book.date.split('T')[0]}</td>
-                        <td><span onClick={() => {onDeleteEntry(book.id)}}>{String.fromCodePoint('0x1f5d1')}</span></td>
+                        <td><span onClick={() => {onDeleteEntry(book.book_id)}}>{String.fromCodePoint('0x1f5d1')}</span></td>
                     </tr>
                 ))}
 
