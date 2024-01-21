@@ -16,6 +16,8 @@ const App = () => {
     if (storedAuthStatus) {
       setIsAuthenticated(true);
     }
+
+    // mysql 
   }, []);
 
   const handleAuth = (uid) => {

@@ -1,10 +1,12 @@
 // Home.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { auth } from './services/firebase.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
 import './Auth.css'
 
 import { useNavigate } from 'react-router-dom';
+
+import pgApi from './services/pgApi.js';
 
 const Auth = ({ isAuthenticated, handleAuth}) => {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -15,7 +17,16 @@ const Auth = ({ isAuthenticated, handleAuth}) => {
   const [isError, setIsError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+
   const history = useNavigate();
+
+  useEffect(() => {
+    //console.log(pgApi.fetchSubjects());
+    //console.log(pgApi.createSubject());
+  });
+
 
   const handleToggleRegister = () => {
     setIsRegistering(!isRegistering);
@@ -31,16 +42,42 @@ const Auth = ({ isAuthenticated, handleAuth}) => {
   }
 
 
+const handleToggleSuccess = (msg) => {
+    setSuccessMsg(msg);
+    setIsSuccess(true);
+    setTimeout(() => {
+      setSuccessMsg("");
+      setIsSuccess(false);
+    }, 5000)
+}
+
+
 const handleRegister = async () => {
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in 
       //var user = userCredential.user;
       console.log('Usuario registrado con éxito');
-      handleAuth();
+      handleToggleSuccess("Usuario registrado con éxito! Iniciando sesión...");
+      const user = userCredential.user;
+      const uid = user.uid; // Obtener el UID del usuario
+      handleAuth(uid);
+      console.log("login exitoso")
+      history("ecmanager");
       // ...
     })
     .catch((error) => {
+      switch(error.code) {
+        case "auth/email-already-in-use": 
+          handleToggleError("Ya existe una cuenta con este e-email, "); //Si has olvidado tu contraseña haz click aquí
+        break;
+        case "auth/invalid-email":
+          handleToggleError("El formato del e-mail que has ingresado no es correcto.");
+        break;
+        default:
+          handleToggleError("Ha habido un error inesperado");
+        break;
+      }
       //var errorCode = error.code;
       //var errorMessage = error.message;
       console.error('Error al registrar usuario', error.message);
@@ -101,8 +138,10 @@ const handleLogin = async () => {
                 </p>
                   {isError ? 
                     <div className="alert alert-danger">{errorMsg}</div> : <></>
-                }
-                
+                  }
+                  {isSuccess ? 
+                    <div className="alert alert-success">{successMsg}</div> : <></>  
+                  }                
             </div>
 
       </div>
