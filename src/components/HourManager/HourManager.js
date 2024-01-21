@@ -3,153 +3,165 @@ import "./HourManager.css";
 import SubjectItem from '../SubjectItem/SubjectItem'
 import Book from '../Book/Book'
 import api from '../../services/firebaseApi';
+import pgApi from '../../services/pgApi';
 
 function HourManager({lsAppKey}) {
-    const [idCounterSubject, setIdCounterSubject] = useState(0);
     const [subjects, setSubjects] = useState([]);
 
-    const [idCounterUnit, setIdCounterUnit] = useState(0);
     const [units, setUnits] = useState([]);
 
     const [inputSubjectName, setInputSubjectName] = useState("");
 
-    const [idCounterBookEntries, setIdCounterBookEntries] = useState(0);
     const [bookEntries, setBookEntries] = useState([]);
 
     const [uid] = useState(localStorage.getItem(lsAppKey + "-uid"));
 
     useEffect(() => {           
-        // get data from db
-        api.fetchIdCounterSubject(uid).then((data) => {
-            setIdCounterSubject(data);
-        });
-
-        api.fetchSubjectsFromFirebase(uid).then((data) => {
+        pgApi.fetchSubjects(uid).then((data) => {
             setSubjects(data);
-        });
+        }); 
 
-        api.fetchUnitsFromFirebase(uid).then((data) => {
+        pgApi.fetchUnits(uid).then((data) => {
             setUnits(data);
-        });
+        }); 
 
-        api.fetchIdCounterUnitFromFirebase(uid).then((data) => {
-            setIdCounterUnit(data);
-        });   
-        
-        api.fetchBookEntriesFromFirebase(uid).then((data) => {
+        pgApi.fetchBookEntries(uid).then((data) => {
             setBookEntries(data);
-        });
-
-        api.fetchIdCounterBookEntriesFromFirebase(uid).then((data) => {
-            setIdCounterBookEntries(data);
         });
 
     }, [uid]);
 
     const handleAddSubject = () => {
         let subject = {
-            id: idCounterSubject + 1,
             name: inputSubjectName,
-            backgroundColor: "#c7c7c7",
+            bg_color: "#c7c7c7",
+            user_uid: uid,
+            collapsed: false,
         }
 
-        setSubjects((prevSubjects) => [...prevSubjects, subject]);
-        setIdCounterSubject((prevIdCounter) => prevIdCounter + 1);
-
-        api.saveSubjectToFirebase(uid, [...subjects, subject], idCounterSubject + 1); 
-
+        pgApi.createSubject(subject).then((a) => {
+            if(a) {
+                handleInputSubjectName(null, "");
+                setSubjects([...subjects, a.rows[0]])
+            }
+        })
+        
     }
 
-    const handleAddUnit = (subjectId, name, hours) => {
+    const handleDeleteSubject = (id) => {
+        pgApi.deleteSubject(id).then((a) => {
+            if(a) {
+                const updatedSubjects = subjects.filter((subject) => subject.subject_id !== id);
+                setSubjects(updatedSubjects);
+            }
+        })
+    }
+
+    const handleAddUnit = (subject_id, name, hours) => {
         let unit = {
-            id: idCounterUnit + 1,
-            subjectId: subjectId,
+            subject_id: subject_id,
             name: name,
-            hours: hours
+            hours: hours,
+            user_uid: uid
         }
 
-        setUnits((prevUnits) => [...prevUnits, unit]);
-        setIdCounterUnit((prevIdCounter) => prevIdCounter + 1);
+        pgApi.createUnit(unit).then((a) => {
+            if(a) {
+                setUnits([...units, a.rows[0]])
+                return true;
+            }
+        });
 
-        api.saveUnitToFirebase(uid, [...units, unit], idCounterUnit + 1); 
+        return true;
     }
 
     const handleAddBookEntry = (entry) => {
-        // add entry id
-        entry.id = idCounterBookEntries + 1;
+        entry.user_uid = uid;
+        pgApi.createBookEntry(entry).then((a) => {
+            if(a) {
+                setBookEntries([...bookEntries, a.rows[0]]);
+                return true;
+            }
+        });
 
-        //  
-        setBookEntries((prevBookEntries) => [...prevBookEntries, entry]);
-        setIdCounterBookEntries((prevIdCounter) => prevIdCounter + 1);
-
-        api.saveBookEntryToFirebase(uid, [...bookEntries, entry], idCounterBookEntries + 1); 
+        return true;
     }
 
     const handleEditSubjectColor = (id, color) => {
-        // Find the subject with the given id
-        const updatedSubjects = subjects.map((subject) => {
-            if (subject.id === id) {
-                // Add or update the backgroundColor property
-                return { ...subject, backgroundColor: color };
-            }
-            return subject;
-        });
-    
-        // Update the state with the new array
-        setSubjects(updatedSubjects);
-    
-        // Execute the API call to save the updated subjects to Firebase
-        api.saveSubjectToFirebase(uid, updatedSubjects, null);
+        const updateData = {
+            bg_color: color,
+        }
+
+        handleEditSubject(id, updateData);
+        return true;
     };
+
+    const handleEditSubject = (id, updateData) => {
+        const updatedSubjects = pgApi.updateSubject(id, updateData, uid).then((a) => {
+            if(a) {
+                const updated = subjects.filter((subject) => subject.subject_id !== a.subject_id);
+                      updated.push(a);
+                return updated;
+            }
+        });
+
+        return updatedSubjects;
+    }
 
     const handleEditSubjectCollapse = (id, collapse) => {
+        const updateData = {
+            collapsed: collapse,
+        }
+
+        console.log(id);
+
         // Find the subject with the given id
-        const updatedSubjects = subjects.map((subject) => {
-            if (subject.id === id) {
-                // Add or update the backgroundColor property
-                return { ...subject, isCollapsed: collapse };
-            }
-            return subject; 
-        });
+        handleEditSubject(id, updateData);
 
         // Update the state with the new array
-        setSubjects(updatedSubjects);
-    
-        // Execute the API call to save the updated subjects to Firebase
-        api.saveSubjectToFirebase(uid, updatedSubjects, null);
+        return true
     };
     
-
     const handleDeleteUnit = (id) => {
-        //Filter out the unit with the given id
-        const updatedUnits = units.filter((unit) => unit.id !== id);
-
-        //Update the state with the new array
-        setUnits(updatedUnits);
-        api.saveUnitToFirebase(uid, updatedUnits, null);
+        pgApi.deleteUnit(id).then((a) => {
+            if(a) {
+                const updatedUnits = units.filter((unit) => unit.unit_id !== id);
+                setUnits(updatedUnits);
+            }
+        })
     }
 
     const handleDeleteBookEntry = (id) => {
-        //Filter out the unit with the given id
-        const updatedBookEntries = bookEntries.filter((book) => book.id !== id);
-
-        //Update the state with the new array
-        setBookEntries(updatedBookEntries);
-        api.saveBookEntryToFirebase(uid, updatedBookEntries, null);
+        pgApi.deleteBookEntry(id).then((a) => {
+            if(a) {
+                const updatedBookEntries = bookEntries.filter((book) => book.book_id !== id);
+                setBookEntries(updatedBookEntries);
+            }
+        })
     }
 
 
-    const handleInputSubjectName = (e) => {
-        setInputSubjectName(e.target.value);
+    const handleInputSubjectName = (e, pg) => {
+        if(e == null && pg != null) {
+            setInputSubjectName(pg);
+        } else {
+            setInputSubjectName(e.target.value);
+        }
+        
     }
 
     const getSubjectNameById = (id) => {
-        const subject = subjects.find((subject) => subject.id === id);
+        const subject = subjects.find((subject) => subject.subject_id === id);
         return subject ? subject.name : "Subject not found";
     }
 
+    const getUnitNameById = (id) => {
+        const unit = units.find((unit) => unit.unit_id === id);
+        return unit ? unit.name : "Unit not found";
+    }
+
     const getUnitsBySubjectId = (subjectId) => {
-        return units.filter((unit) => unit.subjectId === subjectId);
+        return units.filter((unit) => unit.subject_id === subjectId);
     };
 
     return (
@@ -162,7 +174,7 @@ function HourManager({lsAppKey}) {
                     <div className="row mb-2">
                         <span className="mb-1">Añadir una materia nueva</span>
                         <div className="input-group">
-                            <input className="form-control" onChange={handleInputSubjectName} placeholder="" type="text" name="" id="" />
+                            <input className="form-control" value={inputSubjectName} onChange={handleInputSubjectName} placeholder="" type="text" name="" id="" />
                             <button className="btn btn-primary" onClick={handleAddSubject}>Añadir materia</button>
                         </div>
                     </div>
@@ -178,7 +190,8 @@ function HourManager({lsAppKey}) {
                             handleDeleteUnit={handleDeleteUnit} 
                             bookEntries={bookEntries} 
                             handleEditSubjectColor={handleEditSubjectColor}
-                            handleEditSubjectCollapse={handleEditSubjectCollapse}></SubjectItem>
+                            handleEditSubjectCollapse={handleEditSubjectCollapse}
+                            handleDeleteSubject={handleDeleteSubject}></SubjectItem>
                     ))}
                 </div>
             </div>
@@ -187,7 +200,7 @@ function HourManager({lsAppKey}) {
                     <h3 className="app-title">Registro</h3>
                 </div>
                 <div className="row">
-                    <Book bookEntries={bookEntries} handleDeleteBookEntry={handleDeleteBookEntry} getSubjectNameById={getSubjectNameById} subjects={subjects} getUnitsBySubjectId={getUnitsBySubjectId} handleAddBookEntry={handleAddBookEntry}></Book>
+                    <Book bookEntries={bookEntries} handleDeleteBookEntry={handleDeleteBookEntry} getUnitNameById={getUnitNameById} getSubjectNameById={getSubjectNameById} subjects={subjects} getUnitsBySubjectId={getUnitsBySubjectId} handleAddBookEntry={handleAddBookEntry}></Book>
                 </div>
             </div>
         </div>

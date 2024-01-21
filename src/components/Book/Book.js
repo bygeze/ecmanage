@@ -2,7 +2,7 @@
 import { useState } from "react";
 import './Book.css'
 
-function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects, getUnitsBySubjectId, handleAddBookEntry}) {
+function Book({bookEntries, handleDeleteBookEntry, getUnitNameById, getSubjectNameById, subjects, getUnitsBySubjectId, handleAddBookEntry}) {
     const [selectedSubject, setSelectedSubject] = useState();
     const [selectedUnit, setSelectedUnit] = useState();
     const [inputDate, setInputDate] = useState();
@@ -10,7 +10,7 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
 
     const handleSubjectSelectChange = (e) => {
         const selectedSubjectId = e.target.value;
-        const selectedSubject = subjects.find((subject) => subject.id === parseInt(selectedSubjectId));
+        const selectedSubject = subjects.find((subject) => subject.subject_id === parseInt(selectedSubjectId));
         setSelectedSubject(selectedSubject);
     }
 
@@ -28,18 +28,24 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
 
     const onAddEntry = () => {
         let entry = {
-            subjectId: selectedSubject.id,
-            unitId: parseInt(selectedUnit),
+            subject_id: selectedSubject.subject_id,
+            unit_id: parseInt(selectedUnit),
             hours: parseInt(inputHours),
             date: inputDate
         }
 
-        handleAddBookEntry(entry);
+        if(handleAddBookEntry(entry)) {
+            let e = {target: {value: ""}};
+            handleInputDate(e);
+            handleInputHours(e);
+
+            e = {target: {value: 0}};
+            handleSubjectSelectChange(e);
+            handleUnitSelectChange(e);
+        }
     }
 
     const onDeleteEntry = (id) => {
-
-        
         handleDeleteBookEntry(id);
     }
 
@@ -80,10 +86,10 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
             <tbody>
                 <tr>
                     <td>
-                        <select defaultValue={0} className="form-control" onChange={(e) => handleSubjectSelectChange(e)}>
+                        <select defaultValue={0} value={selectedSubject ? selectedSubject.subject_id : 0} className="form-control" onChange={(e) => handleSubjectSelectChange(e)}>
                             <option value="0">Selecciona una materia</option>
                             {subjects.map((subject) => (
-                                <option key={subject.id} value={subject.id}>
+                                <option key={subject.subject_id} value={subject.subject_id}>
                                     {subject.name}
                                 </option>
                             ))}
@@ -91,12 +97,12 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
                     </td>
                     <td>
 
-                        <select defaultValue={0} className="form-control" onChange={handleUnitSelectChange}>
+                        <select defaultValue={0}  className="form-control" onChange={(e) => {handleUnitSelectChange(e)}}>
                             {selectedSubject ? (
                                 <>
                                     <option value="0">Selecciona una unidad</option>
-                                    {getUnitsBySubjectId(selectedSubject.id).map((unit) => (
-                                        <option key={unit.id} value={unit.id}>
+                                    {getUnitsBySubjectId(selectedSubject.subject_id).map((unit) => (
+                                        <option key={unit.unit_id} value={unit.unit_id}>
                                             Unidad {unit.name}
                                         </option>
                                     ))}
@@ -108,10 +114,10 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
                         
                     </td>
                     <td>
-                        <input type="number"     className="form-control ps-0 pe-0" onChange={handleInputHours}/>
+                        <input type="number" value={inputHours}     className="form-control ps-0 pe-0" onChange={handleInputHours}/>
                     </td>
                     <td>
-                        <input className="form-control date-input" type="date" name="" id="" onChange={handleInputDate} />
+                        <input className="form-control date-input" value={inputDate} type="date" name="" id="" onChange={handleInputDate} />
                     </td>
                     <td><span onClick={onAddEntry}>{String.fromCodePoint('0x2795')}</span></td>
                 </tr>
@@ -123,13 +129,13 @@ function Book({bookEntries, handleDeleteBookEntry, getSubjectNameById, subjects,
                 bookEntries.map((book, index) => (
                     <tr key={index}>
                         <td>
-                            <span className="d-none d-lg-none d-xl-inline">{getSubjectNameById(book.subjectId)}</span>
-                            <span className="d-inline d-md-none">{utilCollideText(getSubjectNameById(book.subjectId), 8)}</span>
-                            <span className="d-none d-md-inline d-xl-none">{utilCollideText(getSubjectNameById(book.subjectId), 10)}</span>
+                            <span className="d-none d-lg-none d-xl-inline">{getSubjectNameById(book.subject_id)}</span>
+                            <span className="d-inline d-md-none">{utilCollideText(getSubjectNameById(book.subject_id), 8)}</span>
+                            <span className="d-none d-md-inline d-xl-none">{utilCollideText(getSubjectNameById(book.subject_id), 10)}</span>
                             </td>
-                        <td><span className="d-none d-lg-inline">Unidad </span><span className="d-inline d-lg-none">Ud. </span>{book.unitId}</td>
+                        <td><span className="d-none d-lg-inline">Unidad </span><span className="d-inline d-lg-none">Ud. </span>{getUnitNameById(book.unit_id)}</td>
                         <td>{book.hours}</td>
-                        <td>{book.date}</td>
+                        <td>{book.date.split('T')[0]}</td>
                         <td><span onClick={() => {onDeleteEntry(book.id)}}>{String.fromCodePoint('0x1f5d1')}</span></td>
                     </tr>
                 ))}

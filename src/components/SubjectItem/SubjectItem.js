@@ -2,16 +2,16 @@
 import { useState } from "react";
 import './SubjectItem.css'
 
-function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bookEntries, handleEditSubjectColor, handleEditSubjectCollapse}) {
+function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bookEntries, handleEditSubjectColor, handleEditSubjectCollapse, handleDeleteSubject}) {
     const [inputUnitName, setInputUnitName] = useState("");
-    const [inputTotalHours, setInputTotalHours] = useState(0);
-    const [isCollapsed, setIsCollapsed] = useState(subject.isCollapsed);
-    const [frameColor,  setFrameColor] = useState(subject.backgroundColor);
+    const [inputTotalHours, setInputTotalHours] = useState("");
+    const [isCollapsed, setIsCollapsed] = useState(subject.collapsed);
+    const [frameColor,  setFrameColor] = useState(subject.bg_color);
 
     const handleInputColor = (id, e) => {
-//console.log(e.target.value);
-        setFrameColor(e.target.value);
-        handleEditSubjectColor(id, e.target.value);
+        if(handleEditSubjectColor(id, e.target.value)) {
+            setFrameColor(e.target.value);
+        }
     }
 
     const handleInputUnitName = (e) => {
@@ -24,15 +24,24 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
 
     const toggleCollapseContent = () => {
         setIsCollapsed(!isCollapsed);
-        handleEditSubjectCollapse(subject.id, !isCollapsed);
+        handleEditSubjectCollapse(subject.subject_id, !isCollapsed);
     }
 
     const onAddUnit = () => {
-        handleAddUnit(subject.id, inputUnitName, inputTotalHours);
+        if(handleAddUnit(subject.subject_id, inputUnitName, inputTotalHours)) {
+            let e = {target: {value: ""}};
+
+            handleInputUnitName(e);
+            handleInputTotalHours(e);
+        }
     }
 
     const onDeleteUnit = (id) => {
         handleDeleteUnit(id);
+    }
+
+    const onDeleteSubject = (id) => {
+        handleDeleteSubject(id)
     }
 
     const calcHourPercentage = (hours) => {
@@ -43,7 +52,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
     const calcAvailableHours = (subjectId, unitId) => {
         // Filter bookEntries based on subjectId and unitId
         const relevantBookEntries = bookEntries.filter(
-          (entry) => entry.subjectId === subjectId && entry.unitId === unitId
+          (entry) => entry.subject_id === subjectId && entry.unit_id === unitId
         );
 
          //Calculate the sum of hours from relevant bookEntries
@@ -53,7 +62,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
         );
       
         // Get the total hours for the unit
-        const totalUnitHours = units.find((unit) => unit.id === unitId)?.hours || 0;
+        const totalUnitHours = units.find((unit) => unit.unit_id === unitId)?.hours || 0;
 
         // Calculate available hours
         const availableHours = calcHourPercentage(totalUnitHours) - totalBookedHours;
@@ -68,13 +77,15 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
     return (
         <div 
         className="subject-item" 
-        key={index}>
+        key={subject.subject_id}>
             <div className="row g-0 subject-item-header" style={{backgroundColor: frameColor}}>
                 <div className="col-9 p-2 d-flex align-items-center justify-content-start">
                     <h4 className="text-start">{subject.name}</h4>
                 </div>
                 <div className="col-3 p-2 d-flex align-items-center justify-content-end">
-                    <input value={frameColor} onChange={(e) => {handleInputColor(subject.id, e)}} type="color"></input>
+                <span onClick={() => {onDeleteSubject(subject.subject_id)}}>{String.fromCodePoint('0x1f5d1')}</span>
+
+                    <input style={{minWidth: "30px"}} value={frameColor} onChange={(e) => {handleInputColor(subject.subject_id, e)}} type="color"></input>
                     <span
                         className="text-end emoji"
                         onClick={toggleCollapseContent}>
@@ -108,14 +119,14 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
                     </thead>
                     <tbody>
                     {units.map((unit) => {
-                        if (unit.subjectId === subject.id) {
+                        if (unit.subject_id === subject.subject_id) {
                         return (
-                            <tr key={unit.id}>
+                            <tr key={unit.unit_id}>
                             <td>{unit.name}</td>
                             <td>{unit.hours}</td>
                             <td>{calcHourPercentage(unit.hours)}</td>
-                            <td>{calcAvailableHours(subject.id, unit.id)}</td>
-                            <td><span className="emoji" onClick={() => onDeleteUnit(unit.id)}>{String.fromCodePoint('0x1f5d1')}</span></td>
+                            <td>{calcAvailableHours(subject.subject_id, unit.unit_id)}</td>
+                            <td><span className="emoji" onClick={() => onDeleteUnit(unit.unit_id)}>{String.fromCodePoint('0x1f5d1')}</span></td>
                             </tr>
                         );
                         }
@@ -132,6 +143,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
                             name="" 
                             id="" 
                             className="form-control"
+                            value={inputUnitName}
                             onChange={handleInputUnitName} 
                             placeholder="# de unidad"/>
 
@@ -140,6 +152,7 @@ function SubjectItem({subject, index, units, handleAddUnit, handleDeleteUnit, bo
                             name="" 
                             id="" 
                             className="form-control"
+                            value={inputTotalHours}
                             onChange={handleInputTotalHours} 
                             placeholder="# de horas"/>
                         
