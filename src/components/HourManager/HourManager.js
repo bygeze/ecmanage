@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import "./HourManager.css";
 import SubjectItem from '../SubjectItem/SubjectItem'
 import Book from '../Book/Book'
-import api from '../../services/firebaseApi';
 import pgApi from '../../services/pgApi';
 
 function HourManager({lsAppKey}) {

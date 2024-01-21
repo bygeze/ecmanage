@@ -3,10 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { auth } from './services/firebase.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
 import './Auth.css'
-
 import { useNavigate } from 'react-router-dom';
-
-import pgApi from './services/pgApi.js';
 
 const Auth = ({ isAuthenticated, handleAuth}) => {
   const [isRegistering, setIsRegistering] = useState(false);
